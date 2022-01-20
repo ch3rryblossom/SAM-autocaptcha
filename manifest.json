@@ -1,6 +1,6 @@
 {
 	"name": "SAM-autocaptcha",
-	"version": "0.1",
+	"version": "0.5",
 	"description": "Automatic CAPTCHA filler for IISER Pune's Academic ERP",
 	"author": "ch3rryblossom",
 	"manifest_version": 3,
