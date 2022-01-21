@@ -6,5 +6,5 @@ A Google Chrome extension that automatically fills in the "CAPTCHA" form element
 Uses OCR Space's [free OCR API](https://ocr.space/ocrapi).
 
 
-### *V1.0 Goal:*
+### *V1.0*
 Selects image tag, converts it into base64, passes it to a POST call for the OCR API, parses returned information, fills in the form element.
