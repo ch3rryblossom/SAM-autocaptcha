@@ -7,7 +7,7 @@
 	
 	"permissions": ["storage", "activeTab", "scripting", "tabs"],
 	"content_scripts": [{
-		"js": ["jquery-3.6.0.min.js","auto-login.js"],
+		"js": ["auto-login.js"],
 		"matches": ["https://www.iiserpune.in/sam/roott/index.php"]
 	}]
 }
