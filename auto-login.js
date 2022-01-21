@@ -50,12 +50,14 @@ console.log('auto-login.js loaded');
 			let exitCode = value['FileParseExitCode'];
 			let parsedText = value['ParsedText'];
 			let errorMessage = value['ErrorMessage'];
+
+			// If the result is successful, fill form
 			console.log(parsedText);
+			const captchabox = document.querySelector('input[name="verif_box"]');
+			captchabox.value = parsedText;
 		      });
 	  
 		    } else { // If the returned result is empty (need to work on error conditions)
 			console.log('Error: ' + errorMessage);
 		    }
 		  })
-	      
-	  
