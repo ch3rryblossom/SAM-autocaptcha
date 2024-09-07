@@ -1,13 +1,13 @@
 {
 	"name": "SAM-autocaptcha",
-	"version": "0.5",
+	"version": "2.0",
 	"description": "Automatic CAPTCHA filler for IISER Pune's Academic ERP",
 	"author": "ch3rryblossom",
 	"manifest_version": 3,
 	
 	"permissions": ["storage", "activeTab", "scripting", "tabs"],
 	"content_scripts": [{
-		"js": ["auto-login.js"],
+		"js": ["tesseract.min.js", "auto-login.js"],
 		"matches": ["https://www.iiserpune.in/sam/roott/index.php"]
 	}]
 }

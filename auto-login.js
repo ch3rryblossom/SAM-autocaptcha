@@ -1,63 +1,39 @@
-console.log('auto-login.js loaded');
+console.log('Tesseract, auto-fill script loaded...');
 
-	// select span with class="input-group-addon"
-	const $span = document.querySelector('.input-group-addon');
+// Select span with class="input-group-addon", this span only has the captcha as an image
+const $span = document.querySelector('.input-group-addon');
+const $captchaImage = $span.querySelector('img');
 
-	// select image inside span
-	const $img = $span.querySelector('img');
+// If I use $captchaImage.src for Tesseract.recognize, the image seems to get shuffled again, by sending the URL request?
+// So I convert the image object into a canvas and send it to Tesseract.
+function getImageData(img) {
+	// initialize canvas
+	const canvas = document.createElement('canvas');
+	const context = canvas.getContext('2d');
+	canvas.width = img.width; canvas.height = img.height;
 
-	// convert image to base64
-	function getDataUrl(img) {
-		// Create canvas
-		const canvas = document.createElement('canvas');
-		const ctx = canvas.getContext('2d');
-		// Set width and height
-		canvas.width = img.width;
-		canvas.height = img.height;
-		// Draw the image
-		ctx.drawImage(img, 0, 0);
-		return canvas.toDataURL('image/jpeg');
-	     }
+	context.drawImage(img, 0, 0);
+	return canvas;
+}
 
-	     const dataUrl = getDataUrl($img);
-		console.log(dataUrl);
+const captchaCanvas = getImageData($captchaImage);
 
-	  
-	// parameters that need to be passed to the OCR API, as a FormData object
-		const formData = new FormData();
-		formData.append('apikey', '030d69f19088957'); // replace with your own API key? hope this is okay to put out on github
-		formData.append('base64Image', dataUrl);
-	
-		const url = 'https://api.ocr.space/parse/image';
-	  
-	// Send a request to the OCR API
-		fetch(url, {
-		  method: 'POST',
-		  body: formData
-	  
-		// Use json() to interpret the returned information
-		}).then(response => response.json())
-		  .then((jsonData) => {
-	  
-		    const parsedResults = jsonData['ParsedResults'];
-		    const errorMessage = jsonData['ErrorMessage'];
-	  
-		    // If the returned result is not empty
-		    if (parsedResults != null) {
-	  
-		      // Storing details on each result
-		      parsedResults.forEach((value) => {
-			let exitCode = value['FileParseExitCode'];
-			let parsedText = value['ParsedText'];
-			let errorMessage = value['ErrorMessage'];
+// document.body.appendChild(captchaCanvas);  
+// This will display the canvas on the page, used this to debug whether the image going into Tesseract is correct
 
-			// If the result is successful, fill form
-			console.log(parsedText);
-			const captchabox = document.querySelector('input[name="verif_box"]');
-			captchabox.value = parsedText;
-		      });
-	  
-		    } else { // If the returned result is empty (need to work on error conditions)
-			console.log('Error: ' + errorMessage);
-		    }
-		  })
+// Tesseract.js - should be loaded in manifest?
+Tesseract.recognize(captchaCanvas, 'eng')
+  .then(function(result) {
+    const recognizedText = result.data.text;		// text is returned as data.text
+    console.log(' --- SAM-autocaptcha ---');
+    console.log(' Recognized Text: ', recognizedText);
+
+    // Select the CAPTCHA input box
+    const captchaInput = document.querySelector('input[name="verif_box"]');
+
+    // Remove any extra spaces and fill it
+    captchaInput.value = recognizedText.trim();  
+  })
+  .catch(function(error) {
+    console.error('Error from Tesseract?:', error);
+  });
